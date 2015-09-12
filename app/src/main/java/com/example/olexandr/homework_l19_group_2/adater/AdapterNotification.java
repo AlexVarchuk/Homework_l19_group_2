@@ -16,6 +16,7 @@ public class AdapterNotification extends BaseAdapter {
 
     private Context mContext;
     private List<ItemNotification> mData;
+
     public AdapterNotification(Context _context, List<ItemNotification> _data) {
         this.mContext = _context;
         this.mData = _data;
@@ -40,11 +41,11 @@ public class AdapterNotification extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
 
-        if(convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_list, parent, false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
-        }else {
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
         ItemNotification item = mData.get(position);
@@ -52,14 +53,14 @@ public class AdapterNotification extends BaseAdapter {
         holder.tvSecond.setText(item.getSubtitle());
 
 
-
         return convertView;
     }
 
-    private class ViewHolder{
+    private class ViewHolder {
         TextView tvFirst;
         TextView tvSecond;
-        public ViewHolder(View v){
+
+        public ViewHolder(View v) {
             tvFirst = (TextView) v.findViewById(R.id.tv_item_text1_IL);
             tvSecond = (TextView) v.findViewById(R.id.tv_item_text2_IL);
         }

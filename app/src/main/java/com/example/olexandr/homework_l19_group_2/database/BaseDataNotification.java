@@ -9,7 +9,7 @@ public class BaseDataNotification extends SQLiteOpenHelper implements BaseColumn
 
     public static final String DATABASE_NAME = "mydata.db";
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_TABLE = "Notisfication";
+    public static final String DATABASE_TABLE = "Notification";
 
 
     public static final String MESSAGE_COLUMN = "massage";
@@ -25,7 +25,6 @@ public class BaseDataNotification extends SQLiteOpenHelper implements BaseColumn
             + " TEXT, " + TITLE_COLUMN + " TEXT, " + SUBTITLE_COLUMN
             + " TEXT, " + TICKETTEXT_COLUMN + " TEXT, " + VIBRATION_COLUMN
             + " INTEGER, " + SOUND_COLUMN + " INT);";
-
 
 
     public BaseDataNotification(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {

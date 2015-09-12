@@ -21,19 +21,24 @@ public class ItemNotification {
     public String getMassage() {
         return mMassage;
     }
-    public String getTitle(){
+
+    public String getTitle() {
         return mTitle;
     }
-    public String getSubtitle(){
+
+    public String getSubtitle() {
         return mSubtitle;
     }
-    public String getTicketText(){
+
+    public String getTicketText() {
         return mTicketText;
     }
-    public int getVibrate(){
+
+    public int getVibrate() {
         return mVibrate;
     }
-    public int getSound(){
+
+    public int getSound() {
         return mSound;
     }
 

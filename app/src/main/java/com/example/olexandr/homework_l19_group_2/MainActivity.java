@@ -24,19 +24,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener{
-
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
 
     private Button mClearList;
     private Button mUpdate;
-    private Button mClearDatabase;
     private ListView mNotificationList;
 
     private AdapterNotification mAdapter;
-    private List<ItemNotification> mData;
-    private NotificationCompat.Builder mBuilder;
-    private NotificationManager mNotificationManager;
+    private List<ItemNotification> mData = new ArrayList<>();
     private BaseDataNotification mBaseDataNotification;
     private SQLiteDatabase mSQLiteDatabase;
     private static final int NOTIFICATION_ID = 1225;
@@ -50,29 +46,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         getToken();
+        findViews();
+        checkClickListener();
 
-        mNotificationList = (ListView) findViewById(R.id.lv_notification_AM);
-        mClearDatabase = (Button) findViewById(R.id.btn_clear_database_AM);
-        mClearList = (Button) findViewById(R.id.btn_clear_list_AM);
-        mUpdate = (Button) findViewById(R.id.btn_update_list_AM);
 
-        mClearDatabase.setOnClickListener(this);
-        mClearList.setOnClickListener(this);
-        mUpdate.setOnClickListener(this);
-
-        mBaseDataNotification = new BaseDataNotification(this, "mydata.db", null, 1 );
-        mSQLiteDatabase  = mBaseDataNotification.getReadableDatabase();
+        mBaseDataNotification = new BaseDataNotification(this, "mydata.db", null, 1);
+        mSQLiteDatabase = mBaseDataNotification.getReadableDatabase();
 
         mAdapter = new AdapterNotification(this, mData);
         mNotificationList.setAdapter(mAdapter);
+
+
+        loadListView();
+
+
+    }
+
+    private void findViews() {
+        mNotificationList = (ListView) findViewById(R.id.lv_notification_AM);
+        mClearList = (Button) findViewById(R.id.btn_clear_list_AM);
+        mUpdate = (Button) findViewById(R.id.btn_update_list_AM);
+    }
+
+    private void checkClickListener() {
+        mClearList.setOnClickListener(this);
+        mUpdate.setOnClickListener(this);
         mNotificationList.setOnClickListener(this);
+    }
 
-
+    private void loadListView() {
         mData.clear();
         mData.addAll(setList());
         mAdapter.notifyDataSetChanged();
-
-
     }
 
     private List<ItemNotification> setList() {
@@ -81,9 +86,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         BaseDataNotification.MESSAGE_COLUMN, BaseDataNotification.TITLE_COLUMN,
                         BaseDataNotification.SUBTITLE_COLUMN, BaseDataNotification.TICKETTEXT_COLUMN,
                         BaseDataNotification.VIBRATION_COLUMN, BaseDataNotification.SOUND_COLUMN},
-                null,null, null, null,null);
+                null, null, null, null, null);
 
-        while (mCursor.moveToNext()){
+        while (mCursor.moveToNext()) {
             String message = mCursor.getString(mCursor.getColumnIndex(BaseDataNotification.MESSAGE_COLUMN));
             String title = mCursor.getString(mCursor.getColumnIndex(BaseDataNotification.TITLE_COLUMN));
             String subtitle = mCursor.getString(mCursor.getColumnIndex(BaseDataNotification.SUBTITLE_COLUMN));
@@ -107,23 +112,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_clear_database_AM:{
-                mSQLiteDatabase.delete(mBaseDataNotification.DATABASE_TABLE, null, null);
-            }
-                break;
 
-            case R.id.btn_clear_list_AM:{
+            case R.id.btn_clear_list_AM:
                 mData.clear();
                 mAdapter.notifyDataSetChanged();
-            }
+
 
                 break;
 
-            case R.id.btn_update_list_AM:{
+            case R.id.btn_update_list_AM:
                 mData.clear();
                 mData.addAll(setList());
                 mAdapter.notifyDataSetChanged();
-            }
+
 
                 break;
         }
@@ -146,10 +147,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
-
-
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         String message = mData.get(position).getMassage();
@@ -168,7 +165,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setAutoCancel(true);
 
         if (vibrate == 1) builder.setVibrate(new long[]{0, 100, 200, 300});
-        if (sound == 1) builder.setSound(Uri.parse("android.resource://" + this.getPackageName() + "/" + R.raw.eralash));
+        if (sound == 1)
+            builder.setSound(Uri.parse("android.resource://" + this.getPackageName() + "/" + R.raw.eralash));
 
         NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFICATION_ID, builder.build());
