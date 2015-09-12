@@ -1,18 +1,16 @@
 package com.example.olexandr.homework_l19_group_2;
 
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -26,7 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener{
 
     public static final String TAG = MainActivity.class.getSimpleName();
 
@@ -41,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private NotificationManager mNotificationManager;
     private BaseDataNotification mBaseDataNotification;
     private SQLiteDatabase mSQLiteDatabase;
-    private static final int NOTIFICATION_ID = 1234;
+    private static final int NOTIFICATION_ID = 1225;
 
 
     private Cursor mCursor;
@@ -97,8 +95,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
 
-
-
         return listView;
     }
 
@@ -142,31 +138,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }).start();
     }
 
-    private void onClickAddNotification() {
-        mBuilder = new NotificationCompat.Builder(this)
+
+
+
+
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String message = mData.get(position).getMassage();
+        String title = mData.get(position).getTitle();
+        String subtitle = mData.get(position).getSubtitle();
+        String tickerText = mData.get(position).getTicketText();
+        int vibrate = mData.get(position).getVibrate();
+        int sound = mData.get(position).getSound();
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(android.R.drawable.ic_dialog_alert)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), android.R.drawable.sym_def_app_icon))
-                .setContentTitle("My notification")
-                .setContentText("Hello World!")
+                .setContentTitle(title)
+                .setSubText(subtitle)
+                .setContentText(message)
+                .setTicker(tickerText)
                 .setAutoCancel(true);
 
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        if (vibrate == 1) builder.setVibrate(new long[]{0, 100, 200, 300});
+        if (sound == 1) builder.setSound(Uri.parse("android.resource://" + this.getPackageName() + "/" + R.raw.eralash));
 
-        mBuilder.setContentIntent(pendingIntent);
-
-//        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
-
-        Notification notification = mBuilder.build();
-        notification.ledOnMS = 100;
-        notification.ledOffMS = 100;
-        notification.flags = Notification.FLAG_SHOW_LIGHTS;
-
-        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(NOTIFICATION_ID, notification);
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
-
-
-
 }
