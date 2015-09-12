@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void checkClickListener() {
         mClearList.setOnClickListener(this);
         mUpdate.setOnClickListener(this);
-        mNotificationList.setOnClickListener(this);
+        mNotificationList.setOnItemClickListener(this);
     }
 
     private void loadListView() {
@@ -79,6 +79,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mData.addAll(setList());
         mAdapter.notifyDataSetChanged();
     }
+
+    private void getToken() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    InstanceID instanceID = InstanceID.getInstance(MainActivity.this);
+                    String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+                            GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+                    Log.d("kuku", "Token: " + token);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+
 
     private List<ItemNotification> setList() {
         List<ItemNotification> listView = new ArrayList<>();
@@ -96,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int vibrate = mCursor.getInt(mCursor.getColumnIndex(BaseDataNotification.VIBRATION_COLUMN));
             int sound = mCursor.getInt(mCursor.getColumnIndex(BaseDataNotification.SOUND_COLUMN));
             listView.add(new ItemNotification(message, title, subtitle, tickerText, vibrate, sound));
-            return listView;
+
         }
 
 
@@ -104,46 +122,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()) {
 
             case R.id.btn_clear_list_AM:
+                mSQLiteDatabase.delete(mBaseDataNotification.DATABASE_TABLE, null, null);
                 mData.clear();
                 mAdapter.notifyDataSetChanged();
-
-
                 break;
 
             case R.id.btn_update_list_AM:
                 mData.clear();
                 mData.addAll(setList());
                 mAdapter.notifyDataSetChanged();
-
-
                 break;
         }
-    }
-
-    private void getToken() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    InstanceID instanceID = InstanceID.getInstance(MainActivity.this);
-                    String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
-                            GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-                    Log.d("kuku", "Token: " + token);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
 
