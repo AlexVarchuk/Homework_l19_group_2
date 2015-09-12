@@ -107,16 +107,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnAddNotification_AL19:
+            case R.id.btn_clear_database_AM:{
+                mSQLiteDatabase.delete(mBaseDataNotification.DATABASE_TABLE, null, null);
+            }
+                break;
 
+            case R.id.btn_clear_list_AM:{
+                mData.clear();
+                mAdapter.notifyDataSetChanged();
+            }
 
                 break;
 
-            case R.id.btnUpdateNotification_AL19:
-
-                break;
-
-            case R.id.btnRemoveNotification_AL19:
+            case R.id.btn_update_list_AM:{
+                mData.clear();
+                mData.addAll(setList());
+                mAdapter.notifyDataSetChanged();
+            }
 
                 break;
         }
