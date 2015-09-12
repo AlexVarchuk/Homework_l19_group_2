@@ -3,4 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="btn_clear">Clear list notification</string>
+    <string name="btn_update">Update list notification</string>
+    <string name="btn_clear_database">Clear Database</string>
 </resources>
