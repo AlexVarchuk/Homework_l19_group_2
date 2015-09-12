@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int sound = mData.get(position).getSound();
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(android.R.drawable.ic_dialog_alert)
+                .setSmallIcon(android.R.drawable.ic_dialog_dialer)
                 .setContentTitle(title)
                 .setSubText(subtitle)
                 .setContentText(message)
