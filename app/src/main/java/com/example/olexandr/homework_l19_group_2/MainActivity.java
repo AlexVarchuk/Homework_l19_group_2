@@ -26,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener{
 
-    public static final String TAG = MainActivity.class.getSimpleName();
+
 
     private Button mClearList;
     private Button mUpdate;
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     InstanceID instanceID = InstanceID.getInstance(MainActivity.this);
                     String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                             GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-                    Log.d(TAG, "Token: " + token);
+                    Log.d("kuku", "Token: " + token);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
