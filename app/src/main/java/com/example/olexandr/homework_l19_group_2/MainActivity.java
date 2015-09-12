@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -41,10 +43,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SQLiteDatabase mSQLiteDatabase;
     private static final int NOTIFICATION_ID = 1234;
 
+
+    private Cursor mCursor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getToken();
 
         mNotificationList = (ListView) findViewById(R.id.lv_notification_AM);
         mClearDatabase = (Button) findViewById(R.id.btn_clear_database_AM);
@@ -63,9 +70,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mNotificationList.setOnClickListener(this);
 
 
+        mData.clear();
+        mData.addAll(setList());
+        mAdapter.notifyDataSetChanged();
+
+
+    }
+
+    private List<ItemNotification> setList() {
+        List<ItemNotification> listView = new ArrayList<>();
+        mCursor = mSQLiteDatabase.query(BaseDataNotification.DATABASE_TABLE, new String[]{
+                        BaseDataNotification.MESSAGE_COLUMN, BaseDataNotification.TITLE_COLUMN,
+                        BaseDataNotification.SUBTITLE_COLUMN, BaseDataNotification.TICKETTEXT_COLUMN,
+                        BaseDataNotification.VIBRATION_COLUMN, BaseDataNotification.SOUND_COLUMN},
+                null,null, null, null,null);
+
+        while (mCursor.moveToNext()){
+            String message = mCursor.getString(mCursor.getColumnIndex(BaseDataNotification.MESSAGE_COLUMN));
+            String title = mCursor.getString(mCursor.getColumnIndex(BaseDataNotification.TITLE_COLUMN));
+            String subtitle = mCursor.getString(mCursor.getColumnIndex(BaseDataNotification.SUBTITLE_COLUMN));
+            String tickerText = mCursor.getString(mCursor.getColumnIndex(BaseDataNotification.TICKETTEXT_COLUMN));
+            int vibrate = mCursor.getInt(mCursor.getColumnIndex(BaseDataNotification.VIBRATION_COLUMN));
+            int sound = mCursor.getInt(mCursor.getColumnIndex(BaseDataNotification.SOUND_COLUMN));
+            listView.add(new ItemNotification(message, title, subtitle, tickerText, vibrate, sound));
+            return listView;
+        }
 
 
 
+
+        return listView;
     }
 
     @Override
@@ -78,16 +112,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnAddNotification_AL19:
-//                onClickAddNotification();
-                getToken();
+
+
                 break;
 
             case R.id.btnUpdateNotification_AL19:
-                onClickUpdateNotification();
+
                 break;
 
             case R.id.btnRemoveNotification_AL19:
-                onClickRemoveNotification();
+
                 break;
         }
     }
@@ -133,17 +167,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mNotificationManager.notify(NOTIFICATION_ID, notification);
     }
 
-    private void onClickUpdateNotification() {
-        if (mBuilder == null || mNotificationManager == null) return;
 
-        mBuilder.setContentText("Updated: " + System.currentTimeMillis() % 10000);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
-    }
-
-    private void onClickRemoveNotification() {
-        if (mNotificationManager == null) return;
-
-        mNotificationManager.cancel(NOTIFICATION_ID);
-    }
 
 }

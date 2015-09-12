@@ -8,6 +8,16 @@ public class ItemNotification {
     private int mVibrate;
     private int mSound;
 
+    public ItemNotification(String _message, String _title, String _subtitle, String _tickerText, int _vibrate, int _sound) {
+        this.mMassage = _message;
+        this.mTitle = _title;
+        this.mSubtitle = _subtitle;
+        this.mTicketText = _tickerText;
+        this.mVibrate = _vibrate;
+        this.mSound = _sound;
+
+    }
+
     public String getMassage() {
         return mMassage;
     }
