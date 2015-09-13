@@ -15,14 +15,13 @@ import com.google.android.gms.gcm.GcmListenerService;
 
 public class MyGcmListenerService extends GcmListenerService {
 
-    private BaseDataNotification mDatabase;
     private SQLiteDatabase mSQLiteDatabase;
     @Override
     public void onMessageReceived(String from, Bundle data) {
 
         showNotification(this, data);
 
-        mDatabase = new BaseDataNotification(this, "mydata.db", null, 1);
+        BaseDataNotification mDatabase = new BaseDataNotification(this, "mydata.db", null, 1);
         mSQLiteDatabase = mDatabase.getWritableDatabase();
 
         setDatabase(data);
